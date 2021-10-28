@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <link rel="stylesheet" href="/fonts/stylesheet.css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Курс ТКС</title>
+    <link
+      rel="stylesheet"
+      href="/insysnw.css"
+    />
+	<!--
+	  Pins footer to the bottom
+	  TODO: place it properly
+	-->
+    <style>
+      .course {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      body {
+        display: flex;
+        min-height: 100vh;
+        flex-direction: column;
+      }
+
+      footer {
+        margin-top: auto;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="course">
+      <header>
+        <nav class="level nerd">
+          <p class="level-item has-text-centered">
+		    <a href="/lectures">
+              <span class="icon">
+                <i class="mdi mdi-24px mdi-book-open-page-variant" aria-hidden="true"></i>
+              </span>
+              <span class="f3270">Лекции</span>
+            </a>
+          </p>
+          <p class="level-item has-text-centered">
+		    <a href="/practice">
+              <span class="icon">
+                <i class="mdi mdi-24px mdi-flask" aria-hidden="true"></i>
+              </span>
+              <span class="f3270">Практика</span>
+            </a>
+          </p>
+          <p class="level-item has-text-centered">
+            <img
+              src="https://icst.spbstu.ru/userfiles/files/Risunok-KSPT.png"
+              alt="КСПТ"
+              style="height: 50px"
+            />
+          </p>
+          <p class="level-item has-text-centered">
+		    <a href="/awesome">
+              <span class="icon">
+                <i class="mdi mdi-24px mdi-sunglasses" style="color: #fc60a8;" aria-hidden="true"></i>
+              </span>
+              <span class="f3270">Awesome</span>
+            </a>
+          </p>
+          <p class="level-item has-text-centered">
+		    <a href="/">
+              <span class="icon">
+                <i class="mdi mdi-24px mdi-information-outline" aria-hidden="true"></i>
+              </span>
+              <span class="f3270">О курсе</span>
+            </a>
+          </p>
+        </nav>
+      </header>
+      <main>
+        <section class="section">
+          <div class="container">
+
+<h1 class="title">
+Лабораторная: HTTP
+<h1>
+
+<div class="content">
+<h1 id="adresnaia-stroka-v-brauzere-ne-ekvivalentna-zaprosu">Адресная строка в браузере не эквивалентна запросу</h1>
+<p>Для практического знакомства с протоколом мы сами напишем запрос.
+Так как HTTP начинал свой путь как текст в TCP сессии, мы используем утилиту <code>telnet</code>, открывающую TCP сессии и позволяющую писать в и читать из двунаправленного потока.
+Наша задача получить страницу по адресу <a href="http://academy.ejiek.com/about_http/page.html">http://academy.ejiek.com/about_http/page.html</a>.
+В качестве входных параметров <code>telnet</code> принимает адрес сервера и порт.
+Адрес может быть как IP адресом, так и доменным именем.
+Порт для HTTP - 80.</p>
+<p>В командной строке/терминале:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">telnet</span><span> academy.ejiek.com 80
+</span></code></pre>
+<p>Сетевое общение начинается на разрешении доменного имени на стороне клиента (самим <code>telnet</code>) и более не используется.
+<code>telnet</code> открывает TCP сессию.
+Если сессия успешно открылась, мы увидим следующие строки:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Trying 188.242.22.225...
+</span><span>Connected to academy.ejiek.com.
+</span><span>Escape character is &#39;^]&#39;.
+</span></code></pre>
+<p>На данном этапе мы имеем TCP сессию, у которой открыты потоки в оба направления, но они пусты.
+Это время для написания запроса, <code>telnet</code> ждёт ввода и отправит его по нажатию <code>Enter</code>.</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">GET</span><span> /about_http/page.html
+</span></code></pre>
+<p>Это полноценных HTTP запрос.
+Он имеет тип <code>GET</code> и запрашивает ресурс по пути <code>/about_http/page.html</code>.
+Так как мы никак не указали версию протокола, сервер использует минимальную поддерживаемую <strong>0.9</strong>.
+В ней поддерживается всего один тип ресурсов — текст.
+В случае успешного запроса мы увидим:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>&lt;html&gt;
+</span><span>  &lt;p&gt;In the first age&lt;/p&gt;
+</span><span>  &lt;p&gt;In the first 18 tags&lt;/p&gt;
+</span><span>  &lt;p&gt;When the hypertext first lenghtened&lt;/p&gt;
+</span><span>  &lt;p&gt;One stood&lt;/p&gt;
+</span><span>&lt;/html&gt;
+</span><span>Connection closed by foreign host.
+</span></code></pre>
+<p>Всё, кроме последней строчки — ответ, а последняя строчка — сообщение от самого <code>telnet</code> о том, что сервер закрыл TCP сессию.
+Это единственное поведение сервера в данной версии протокола.</p>
+<h1 id="sposoby-peredachi-informatsii">Способы передачи информации</h1>
+<p>Для просмотра содержимого запросов и ответов в этой лабораторной мы воспользуемся неотъемлемой частью современных браузеров — “Инструментами разработчика” (DevTools).
+В Firefox, Chromium-based браузерах один из способов их открыть — клавиша <code>F12</code>.
+Там нас интересует вкладка <code>Network</code>.</p>
+<h2 id="stroka-zaprosa">Строка запроса</h2>
+<p>Исторически первый и самый часто используемый способ передачи данных — строка запроса.
+Та, что в заголовке следует сразу за методом.
+Посмотри на
+В ранее рассмотренном примере:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>GET /about_http/page.html HTTP/2
+</span></code></pre>
+<p><code>/about_http/page.html</code> та самая строка запроса.
+Вопреки рассмотренному примеру, она может состоять не только из пути до файла.
+Рассмотрим возможные составляющий по порядку.</p>
+<h3 id="put-path">Путь (path)</h3>
+<p>Изначально эта часть строки запроса соответствовала пути к файлу на сервере.
+Для уже рассмотренной страницы <a href="https://academy.ejiek.com/about_http/page.html">https://academy.ejiek.com/about_http/page.html</a> на сервере дерево файлов выглядит так:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>$ tree
+</span><span>.
+</span><span>└── about_http
+</span><span>    └── page.html
+</span><span>
+</span><span>1 directory, 1 files
+</span></code></pre>
+<p>Но это вовсе не значит, что путь в запросе всегда соответствует файловой системе.
+Так как сайты уже давно перестали быть набором статичных файлов, а превратились в сложные приложения, путь часто используется для указания желаемой страницы.
+Например, группы, пользователя или проекта - <a href="https://github.com/insysnw/insysnw.github.io">github.com/insysnw/insysnw.github.io</a>.
+Тут <code>insysnw</code> является группой, а <code>insysnw.github.io</code> - проектом.
+Чаще всего запись о группе хранится в Базе Данных (БД) системы, а не директорией в файловой системе сервера.</p>
+<h3 id="zapros-query">Запрос (query)</h3>
+<p>В <a href="/lectures/http">лекции по HTTP</a> мы упоминали, что поиск был предусмотрен с самой первой версии (0.9) и имел формат:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>address_of_index ? keywordlist
+</span></code></pre>
+<p>где <code>address_of_index</code> — путь до специального индексного файла на сервере, <code>?</code> — разделитель, <code>keywordlist</code> — список ключевых слов, разделённых символом <code>+</code>.
+Проблема такого поиска в том, что это поиск по конкретному сайту и только в том случае, если специальный индексный файл был создан авторами.</p>
+<p>Это не работающий, но корректно составленный, пример поиска <code>rick roll</code>’a на данном сайте:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>https://insysnw.github.io/index.file?rick+roll
+</span></code></pre>
+<p>А не работает он потому, что специальный индексный файл (в данном случае <code>/index.file</code> нами не создан).</p>
+<p>Давайте посмотрим, как будет выглядеть поисковый запрос в современном поисковике:
+Для этого перейдём на <a href="https://duckduckgo.com/">https://duckduckgo.com/</a>
+и наберём <code>rick roll</code> и выполним поиск:</p>
+<center>
+<p><img src="https://insysnw.github.io/practice/labs/http/http/duckduckgo.png" alt="скриншот запроса" /></p>
+</center>
+<p>Теперь обратим внимание на формат адресной строки после выполнения запроса:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>https://duckduckgo.com/?q=rick+roll&amp;t=h_&amp;ia=web
+</span></code></pre>
+<p>Адрес самого поисковика остался неизменен <code>https://duckduckgo.com/</code> и путь до специального файла отсутствует, а строка поиска не соответствует ранее упомянутому формату:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>?q=rick+roll&amp;t=h_&amp;ia=web
+</span></code></pre>
+<p>Теперь после <code>?</code> мы видим строку формата <code>Имя переменной</code> <code>=</code> <code>значение</code>, <code>&amp;</code> в качестве разделителя переменных и <code>+</code> в качестве разделителя слов в рамках одной переменной.
+Так последний запрос состоит из трёх переменных:</p>
+<ul>
+<li><code>q</code> со значением <code>rick roll</code></li>
+<li><code>t</code> со значением <code>h_</code></li>
+<li><code>ia</code> со значением <code>web</code></li>
+</ul>
+<p>Это формат используемый для передачи метаданных.
+В примере с поисковиком <code>q</code> очень распространённое название переменной для поискового запроса, а остальные параметры нужны поисковику.
+Часто в таких переменных передают дополнительные параметры поиска: количество результатов на странице, тип сортировки, список категорий товара и многое другое.
+Так как это просто переменные, их можно использовать для любых целей.</p>
+<p>Проверим популярность переменной <code>q</code> в других поисковиках:</p>
+<p><a href="https://ya.ru?q=rick+roll">ya.ru?q=rick+roll</a> | <a href="https://google.ru?q=rick+roll">google.ru?q=rick+roll</a> | <a href="https://bing.com?q=rock+roll">bing.com?q=rock+roll</a>.
+Каждый из них преобразует запрос к своему формату, но каждый поймёт, что мы от него хотели.</p>
+<h3 id="fragment">Фрагмент</h3>
+<p>Иное название фрагментов - якорь.
+В том случае, когда страница весьма масштабная якоря позволяют упростить процесс навицирования по ней, а именно - позволяют ссылаться на конкретную часть страницы.
+Для этого, после запроса указывается якорь, который выглядит следующим образом <code>#anchor</code>.
+Например:
+<a href="https://insysnw.github.io/practice/hw/udp-real-protocol/#rfc">https://insysnw.github.io/practice/hw/udp-real-protocol/#rfc</a></p>
+<p>В данном примере якорь <code>#rfc</code> приведет на подзаголовок страницы с соответствующим названием.
+Но работает это не за счёт сходства названия фрагмента и подзаголовка, а из за свойства объкта <code>id</code>.</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>&lt;h1 id=&quot;rfc&quot;&gt;RFC&lt;/h1&gt;
+</span></code></pre>
+<h2 id="telo-zaprosa">Тело запроса</h2>
+<p>Строка запроса достаточно мощный инструмент, пригодный для создания для почти любых манипуляций с ресурсами, но не все данные удобно представлять однострочным текстом с ограничениями на многие символы.
+Медиа файлы, бинарные протоколы или тот же JSON.</p>
+<p>Именно для этого ещё в HTTP версии <strong>1.0</strong> тело, изначально созданное для передачи текста в ответах, было введено и для запросов.</p>
+<h1 id="kody-sostoianiia">Коды состояния</h1>
+<p>В <a href="/lectures/http">лекции по HTTP</a> мы упоминали, что с приходом HTTP версии 1.0 появились коды состояния, которые представляют из себя обратную связь от сервиса.</p>
+<h1 id="200">200</h1>
+<p><code>OK</code> - запрос успешно выполнен.</p>
+<p><strong>Пример</strong>: <a href="https://academy.ejiek.com/about_http/page.html">https://academy.ejiek.com/about_http/page.html</a></p>
+<p><em>Успешное получение страницы (может потребоваться отключить кэширование - disable cache):</em></p>
+<table>
+  <tr>
+    <th>
+      Request
+    </th>
+    <th>
+      Response
+    </th>
+  </tr>
+  <tr>
+    <td>
+		<pre>
+GET /about_http/page.html?kek HTTP/2
+Host: academy.ejiek.com
+User-Agent: Mozilla/5.0 Firefox/86.0
+Accept: text/html,application/xhtml+xml...
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Cookie: _ym_uid=160...
+Upgrade-Insecure-Requests: 1
+Pragma: no-cache
+Cache-Control: no-cache
+		</pre>
+    </td>
+    <td>
+		<pre>
+HTTP/2 200 OK
+server: nginx/1.19.7
+date: Thu, 11 Mar 2021 09:26:18 GMT
+content-type: text/html
+content-length: 135
+last-modified: Tue, 02 Mar 2021 08:45:26 GMT
+etag: "603dfb26-87"
+strict-transport-security: max-age=15768000; includeSubDomains
+x-robots-tag: noindex, nofollow, nosnippet, noarchive
+accept-ranges: bytes
+X-Firefox-Spdy: h2
+		</pre>
+    </td>
+  </tr>
+</table>
+<h1 id="304">304</h1>
+<p><code>Not Modified</code> — запрашиваемый ресурс уже присутствует на клиенте в актуальном виде.</p>
+<p><strong>Пример:</strong> <a href="https://academy.ejiek.com/about_http/page.html">https://academy.ejiek.com/about_http/page.html</a></p>
+<p>В примере <a href="https://insysnw.github.io/practice/labs/http/http/#200">статуса 200</a> в ответе есть заголовок <code>etag</code>, это метка конкретной версии ресурса.
+При повторном запросе ресурса клиент отправляет заголовок <code>If-None-Match</code> со значением, полученным в <code>etag</code>.
+Если это значение не изменится, то сервер ответ данным статусом без самого ресурса.
+Это экономит трафик и позволяет перезагружать страницу быстрее, ведь отсутствует стадия загрузки.</p>
+<ul>
+<li><em>может потребоваться включить кэширование — отключить <strong>disable cache</strong></em></li>
+</ul>
+<table>
+  <tr>
+    <th>
+      Request
+    </th>
+    <th>
+      Response
+    </th>
+  </tr>
+  <tr>
+    <td>
+		<pre>
+GET /about_http/page.html?kek HTTP/2
+Host: academy.ejiek.com
+User-Agent: Mozilla/5.0 ...
+Accept: text/html...
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Cookie: _ym_uid=...
+Upgrade-Insecure-Requests: 1
+If-Modified-Since: Tue, 02 Mar 2021 08:45:26 GMT
+If-None-Match: "603dfb26-87"
+Cache-Control: max-age=0
+		</pre>
+    </td>
+    <td>
+		<pre>
+HTTP/2 304 Not Modified
+server: nginx/1.19.7
+date: Thu, 11 Mar 2021 09:38:24 GMT
+last-modified: Tue, 02 Mar 2021 08:45:26 GMT
+etag: "603dfb26-87"
+strict-transport-security: max-age=15768000; includeSubDomains
+x-robots-tag: noindex, nofollow, nosnippet, noarchive
+X-Firefox-Spdy: h2
+		</pre>
+    </td>
+  </tr>
+</table>
+<h1 id="301-302">301 &amp; 302</h1>
+<p><code>Moved Permanently</code> &amp; <code>Found</code> - запрашиваемый ресурс был найден, но он находится на другом адресе (перенаправление)</p>
+<p><strong>301</strong> означает, что ресурс отныне доступен по другому адресу, что позволяет клиенту запомнить этот факт и в дальнейшем выполнять перенаправление локально.
+<strong>302</strong> - временная мера и клиенту нужно будет за ресурсом снова обратиться по исходному адресу.</p>
+<p><strong>Пример:</strong> <a href="http://academy.ejiek.com/about_http/page.html">http://academy.ejiek.com/about_http/page.html</a>
+<em>Обратите внимание на отсутствие <code>s</code> в <code>http</code>.</em></p>
+<ul>
+<li>Если в логе видно только 200 или 304, а 301 - нет, необходимо включить <code>Persist logs</code>*</li>
+</ul>
+<table>
+  <tr>
+    <th>
+      Request
+    </th>
+    <th>
+      Response
+    </th>
+  </tr>
+  <tr>
+    <td>
+		<pre>
+GET /practice HTTP/2
+Host: insysnw.github.io
+User-Agent: Mozilla/5.0 ...
+Accept: text/html,...
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: https://insysnw.github.io/
+Upgrade-Insecure-Requests: 1
+Sec-GPC: 1
+TE: Trailers
+		</pre>
+    </td>
+    <td>
+		<pre>
+HTTP/2 301 Moved Permanently
+server: GitHub.com
+content-type: text/html
+strict-transport-security: max-age=31556952
+location: https://insysnw.github.io/practice/
+access-control-allow-origin: *
+expires: Thu, 11 Mar 2021 10:13:28 GMT
+cache-control: max-age=600
+x-proxy-cache: MISS
+x-github-request-id: ...
+accept-ranges: bytes
+date: Thu, 11 Mar 2021 10:03:28 GMT
+via: 1.1 varnish
+age: 0
+x-served-by: cache-bma1637-BMA
+x-cache: MISS
+x-cache-hits: 0
+x-timer: ...
+vary: Accept-Encoding
+x-fastly-request-id: ...
+content-length: 162
+X-Firefox-Spdy: h2
+		</pre>
+    </td>
+  </tr>
+</table>
+<p><em>Существуют и альтернативные способы добиться данного результата.
+Пример можно найти, разобрав, как работает перенаправление со <a href="/labs/10-ssh">старой страницы лабораторной по удалённому доступу (/labs/10-ssh)</a>.</em></p>
+<h1 id="404">404</h1>
+<p><code>Not Found</code> - страница отсутствует на сервере</p>
+<p><strong>Пример:</strong> <a href="https://academy.ejiek.com/about_http/missing_page.html">https://academy.ejiek.com/about_http/missing_page.html</a></p>
+<table>
+  <tr>
+    <th>
+      Request
+    </th>
+    <th>
+      Response
+    </th>
+  </tr>
+  <tr>
+    <td>
+		<pre>
+GET /about_http/missing_page.html HTTP/2
+Host: academy.ejiek.com
+User-Agent: Mozilla/5.0 ...
+Accept: text/html...
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-GPC: 1
+Cache-Control: max-age=0
+TE: Trailers
+		</pre>
+    </td>
+    <td>
+		<pre>
+HTTP/2 404 Not Found
+server: nginx/1.19.7
+date: Thu, 11 Mar 2021 09:46:19 GMT
+content-type: text/html
+content-length: 153
+strict-transport-security: max-age=15768000; includeSubDomains
+X-Firefox-Spdy: h2
+		</pre>
+    </td>
+  </tr>
+</table>
+<h1 id="418">418</h1>
+<p><code>I'm a teapot</code> - отказ сварить кофе, т.к. вызываемое устройство - не кофемашина
+<strong>Пример:</strong> <a href="https://www.google.com/teapot">https://www.google.com/teapot</a></p>
+<table>
+  <tr>
+    <th>
+      Request
+    </th>
+    <th>
+      Response
+    </th>
+  </tr>
+  <tr>
+    <td>
+		<pre>
+HTTP/2 418 I'm a teapot
+content-type: text/html; charset=UTF-8
+strict-transport-security: max-age=31536000
+content-encoding: br
+date: Thu, 11 Mar 2021 09:50:38 GMT
+server: gws
+x-xss-protection: 0
+x-frame-options: SAMEORIGIN
+set-cookie: ...
+alt-svc: h3-29=":443"; ...
+X-Firefox-Spdy: h2
+		</pre>
+    </td>
+    <td>
+		<pre>
+GET /teapot HTTP/2
+Host: www.google.com
+User-Agent: Mozilla/5.0 ...
+Accept: text/html...
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Cookie: ...
+Upgrade-Insecure-Requests: 1
+Sec-GPC: 1
+		</pre>
+    </td>
+  </tr>
+</table>
+<h1 id="502">502</h1>
+<p><code>Bad Gateway</code> — сервер, к которому происходит обращение, является шлюзом и испытывает проблемы с открытием соединением к расположенному за ним ресурсу.</p>
+<p><strong>Пример:</strong> <a href="https://academy.ejiek.com/about_http/bad_gateway">https://academy.ejiek.com/about_http/bad_gateway</a></p>
+<table>
+  <tr>
+    <th>
+      Request
+    </th>
+    <th>
+      Response
+    </th>
+  </tr>
+  <tr>
+    <td>
+		<pre>
+GET /about_http/bad_gateway HTTP/2
+Host: academy.ejiek.com
+User-Agent: Mozilla/5.0 ...
+Accept: text/html,...
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-GPC: 1
+Pragma: no-cache
+Cache-Control: no-cache
+TE: Trailers
+		</pre>
+    </td>
+    <td>
+		<pre>
+HTTP/2 502 Bad Gateway
+server: nginx/1.19.7
+date: Thu, 11 Mar 2021 10:20:09 GMT
+content-type: text/html
+content-length: 157
+strict-transport-security: max-age=15768000; includeSubDomains
+X-Firefox-Spdy: h2
+		</pre>
+    </td>
+  </tr>
+</table>
+<h1 id="zagolovki">Заголовки</h1>
+<p>В <a href="/lectures/http">лекции по HTTP</a> мы уже ознакомились с заголовками и их предназначением.
+Здесь же мы рассмотрим наиболее часто используемые.</p>
+<h2 id="host">Host</h2>
+<p>Очень важный для работы современных веб серверов и прокси.
+Обязательный для версий протокола 1.1 и выше.</p>
+<p>Проверим его наличие на странице <strong><a href="https://academy.ejiek.com/about_http/page.html">https://academy.ejiek.com/about_http/page.html</a></strong> в браузере.</p>
+<p><code>raw</code> заголовок запроса:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>GET /about_http/page.html HTTP/2
+</span><span>Host: academy.ejiek.com
+</span><span>User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:86.0) Gecko/20100101 Firefox/86.0
+</span><span>Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+</span><span>Accept-Language: en-US,en;q=0.5
+</span><span>Accept-Encoding: gzip, deflate, br
+</span><span>Connection: keep-alive
+</span><span>Cookie: _ym_uid=1606166876113626088; _ym_d=1606166876
+</span><span>Upgrade-Insecure-Requests: 1
+</span><span>If-Modified-Since: Tue, 02 Mar 2021 08:45:26 GMT
+</span><span>If-None-Match: &quot;603dfb26-87&quot;
+</span><span>Cache-Control: max-age=0
+</span><span>TE: Trailers
+</span></code></pre>
+<p>Упущенным остаётся только протокол (<code>http</code> или <code>https</code>).</p>
+<h2 id="user-agent">User Agent</h2>
+<p>Сейчас заголовок чаще всего используется для снятия отпечатка устройства.
+Иногда его используют для определения браузера или платформы, чтобы выдать соответствующую страницу.
+Так, некоторые сервисы Google настоятельно рекомендуют использовать себя в <em>Google Chrome</em>, если открыть их в другом браузере.
+Иногда они и вовсе недоступны, пока <code>User Agent</code> не будет удовлетворять их требованиям.
+Часто это вызвано тем, что приложения тестируют только в определённых браузерах, а поддержку остальных совсем закрывают, чтобы сократить список возможных проблем.</p>
+<p>Важно заметить, что сейчас вопросы отображения контента чаще всего решаются на стороне клиента, например, адаптивной вёрсткой.</p>
+<p>Узнать из чего состоит отпечаток, собираемый рекламодателями и проверить его уникальность можно на <a href="https://panopticlick.eff.org/">panopticlick.eff.org</a>.</p>
+<h2 id="etag-if-none-match">ETag &amp; If-None-Match</h2>
+<p>Эта пару и их взаимодействие разобраны в <a href="https://insysnw.github.io/practice/labs/http/http/#304">статусе 304</a>.</p>
+
+</div>
+</div>
+        </section>
+      </main>
+
+      <footer class="footer" style="margin-top: auto">
+        <div class="content has-text-centered">
+          <p>
+            Сделяль <a href="https://ejiek.com">@ejiek</a>. Исходный код имеет
+            лицензию
+            <a href="http://opensource.org/licenses/mit-license.php">MIT</a>.
+            Содержимое сайта имеет лицензию
+            <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a
+            >.
+          </p>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

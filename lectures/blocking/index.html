@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <link rel="stylesheet" href="/fonts/stylesheet.css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Курс ТКС</title>
+    <link
+      rel="stylesheet"
+      href="/insysnw.css"
+    />
+	<!--
+	  Pins footer to the bottom
+	  TODO: place it properly
+	-->
+    <style>
+      .course {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      body {
+        display: flex;
+        min-height: 100vh;
+        flex-direction: column;
+      }
+
+      footer {
+        margin-top: auto;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="course">
+      <header>
+        <nav class="level nerd">
+          <p class="level-item has-text-centered">
+		    <a href="/lectures">
+              <span class="icon">
+                <i class="mdi mdi-24px mdi-book-open-page-variant" aria-hidden="true"></i>
+              </span>
+              <span class="f3270">Лекции</span>
+            </a>
+          </p>
+          <p class="level-item has-text-centered">
+		    <a href="/practice">
+              <span class="icon">
+                <i class="mdi mdi-24px mdi-flask" aria-hidden="true"></i>
+              </span>
+              <span class="f3270">Практика</span>
+            </a>
+          </p>
+          <p class="level-item has-text-centered">
+            <img
+              src="https://icst.spbstu.ru/userfiles/files/Risunok-KSPT.png"
+              alt="КСПТ"
+              style="height: 50px"
+            />
+          </p>
+          <p class="level-item has-text-centered">
+		    <a href="/awesome">
+              <span class="icon">
+                <i class="mdi mdi-24px mdi-sunglasses" style="color: #fc60a8;" aria-hidden="true"></i>
+              </span>
+              <span class="f3270">Awesome</span>
+            </a>
+          </p>
+          <p class="level-item has-text-centered">
+		    <a href="/">
+              <span class="icon">
+                <i class="mdi mdi-24px mdi-information-outline" aria-hidden="true"></i>
+              </span>
+              <span class="f3270">О курсе</span>
+            </a>
+          </p>
+        </nav>
+      </header>
+      <main>
+        <section class="section">
+          <div class="container">
+
+<h1 class="title">
+Типовые блокирующие решения
+<h1>
+
+<div class="content">
+<div class="youtuber">
+    <iframe src="https://www.youtube-nocookie.com/embed/MilImqovonE" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+</div>
+<p>В данной лабораторной мы научимся взаимодействовать с сокетами.
+Попробуем взаимодействовать с ними, как с обычными файлами и найдём специфичные для них поведения.
+Для более детального знакомства с тем как сокеты представляет Операционная Система, мы используем язык C.
+Это вызвано тем, что библиотечные функции в C почти полностью повторяют интерфейс системных вызовов.
+Более того, часто в описании системных вызовов приведены примеры на C.</p>
+<p>Ранее, обсуждая сокеты мы договорились, что это абстракция для сетевого взаимодействия, выдающая себя за файл.
+Начнём с проверки того, насколько сокет похож на файл.</p>
+<p>Первое отличие от обычного файла - сокет не получится найти где угодно на просторах файловой системы.
+Это особый файл, поэтому и создавать его придётся особым способом.</p>
+<p>Для этого воспользуемся <a href="https://man.archlinux.org/man/socket.3p">библиотечной функцией socket</a>, что внутри вызывает <a href="https://man.archlinux.org/man/socket.2">одноимённый системный вызов</a>:</p>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">stdio.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">stdlib.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">sys/socket.h</span><span>&gt;
+</span><span>
+</span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">main</span><span>() {
+</span><span>  </span><span style="color:#b48ead;">int</span><span> socketfd = </span><span style="color:#bf616a;">socket</span><span>(AF_INET, SOCK_STREAM, </span><span style="color:#d08770;">0</span><span>);
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(socketfd == -</span><span style="color:#d08770;">1</span><span>) {
+</span><span>    </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Unable to open a socket</span><span style="color:#96b5b4;">\n</span><span>&quot;);
+</span><span>    </span><span style="color:#96b5b4;">exit</span><span>(</span><span style="color:#d08770;">1</span><span>);
+</span><span>  }
+</span><span>
+</span><span> </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Yay</span><span style="color:#96b5b4;">\n</span><span>&quot;);
+</span><span>
+</span><span>}
+</span></code></pre>
+<p>Всё, что делает данная программа - создаёт сокет, убеждается в корректности его создания и выводит <strong>Yay</strong> в случае успешного создания.
+С наибольшей вероятностью у вас эта программа, как и у нас, выведет <strong>Yay</strong>, что означает успешное создание сокета.</p>
+<p>Рассмотрим подробнее <a href="https://man.archlinux.org/man/socket.3p">функцию socket</a>.
+У неё есть три аргумента:</p>
+<ul>
+<li>domain - семейство абстрагируемых каналов связи (это может быть как [IR], bluetooth, так и IPv4 стэк)</li>
+<li>type - бывает потоковый, датаграммный и SEQPACKET (но он нам в данном курсе не интересен)</li>
+<li>protocol - конкретный протокол для реализации вышеуказанного <strong>типа</strong> общения</li>
+</ul>
+<p>В качестве домена мы используем “адресное семейство” <code>AF_INET</code> соответствующее IPv4.
+Это семейство поддерживает только потоковый и датаграммный типы сокетов.
+И каждому типу сокета соответствует только один протокол: TCP для потоковых, UDP для датаграммных.
+Это приводит к тому, что последнее поле - protocol, можно не заполнять, так как вариант по умолчанию и есть единственный доступный.</p>
+<p>Ещё один важный аспект этой функции - её возвращаемое значение - файловый дескриптор.
+Вот оно, сходство с файлом!
+Дальше можно передавать файловый дескриптор во все системные вызовы, что умеют с ним работать.
+В том числе самые обычные <a href="https://man.archlinux.org/man/read.2">read</a> и <a href="https://man.archlinux.org/man/write.2">write</a>.</p>
+<h1 id="rabota-kak-s-failom">Работа как с файлом</h1>
+<p>Первым делом с новым сокетом попробуем <a href="https://man.archlinux.org/man/read.3p">функцию чтения файлов</a>.</p>
+<p>На вход она принимает файловый дескриптор, указатель на буфер и размер этого буфера.</p>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">errno.h</span><span>&gt; </span><span style="color:#65737e;">//new
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">stdint.h</span><span>&gt; </span><span style="color:#65737e;">// new
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">stdio.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">stdlib.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">sys/socket.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">unistd.h</span><span>&gt; </span><span style="color:#65737e;">// new
+</span><span>
+</span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">main</span><span>() {
+</span><span>  </span><span style="color:#b48ead;">int</span><span> socketfd = </span><span style="color:#bf616a;">socket</span><span>(AF_INET, SOCK_STREAM, </span><span style="color:#d08770;">0</span><span>);
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(socketfd == -</span><span style="color:#d08770;">1</span><span>) {
+</span><span>    </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Unable to open a socket</span><span style="color:#96b5b4;">\n</span><span>&quot;);
+</span><span>    </span><span style="color:#96b5b4;">exit</span><span>(</span><span style="color:#d08770;">1</span><span>);
+</span><span>  }
+</span><span>
+</span><span style="color:#65737e;">// &lt; new
+</span><span>
+</span><span>  uint8_t buf[</span><span style="color:#d08770;">16</span><span>];
+</span><span>  </span><span style="color:#b48ead;">int</span><span> bytes_read = </span><span style="color:#bf616a;">read</span><span>(socketfd, (</span><span style="color:#b48ead;">void </span><span>*)buf, </span><span style="color:#d08770;">16</span><span>);
+</span><span>
+</span><span>  </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Bytes read: </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, bytes_read);
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(bytes_read == -</span><span style="color:#d08770;">1</span><span>) {
+</span><span>    </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Unable to read: </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, errno);
+</span><span>    </span><span style="color:#96b5b4;">exit</span><span>(</span><span style="color:#d08770;">1</span><span>);
+</span><span>  }
+</span><span>
+</span><span style="color:#65737e;">// new &gt;
+</span><span>}
+</span></code></pre>
+<p>В таком виде данный пример не заработает.
+Наш тип сокета ещё не готов к работе.
+Отсутствует возможность к нему обратиться, так у него нет ни порта, ни адреса.
+Поэтому и прочитать из него нельзя.</p>
+<h1 id="bind-i-pervoe-chtenie">Bind и первое чтение</h1>
+<p>С помощью <a href="https://man.archlinux.org/man/bind.3p">функции bind</a> мы присваиваем сокету свой адрес и порт на локальной машине.
+На вход данная функция принимает файловый дескриптор, структуру представляющую собой описание сокета и ее размер.</p>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">arpa/inet.h</span><span>&gt; </span><span style="color:#65737e;">//new
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">errno.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">stdint.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">stdio.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">stdlib.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">sys/socket.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">unistd.h</span><span>&gt;
+</span><span>
+</span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">main</span><span>() {
+</span><span>  </span><span style="color:#b48ead;">int</span><span> socketfd = </span><span style="color:#bf616a;">socket</span><span>(AF_INET, SOCK_STREAM, </span><span style="color:#d08770;">0</span><span>);
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(socketfd == -</span><span style="color:#d08770;">1</span><span>) {
+</span><span>    </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Unable to open a socket</span><span style="color:#96b5b4;">\n</span><span>&quot;);
+</span><span>    </span><span style="color:#96b5b4;">exit</span><span>(</span><span style="color:#d08770;">1</span><span>);
+</span><span>  }
+</span><span>
+</span><span style="color:#65737e;">// &lt; new
+</span><span>  </span><span style="color:#b48ead;">struct</span><span> sockaddr_in sin;
+</span><span>  </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Port before bind </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, </span><span style="color:#bf616a;">ntohs</span><span>(sin.</span><span style="color:#bf616a;">sin_port</span><span>));
+</span><span>  socklen_t len = sizeof(sin);
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">int</span><span> bindr = </span><span style="color:#bf616a;">bind</span><span>(socketfd, (</span><span style="color:#b48ead;">struct</span><span> sockaddr *) &amp;sin, len);
+</span><span>
+</span><span>  </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Port after bind </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, </span><span style="color:#bf616a;">ntohs</span><span>(sin.</span><span style="color:#bf616a;">sin_port</span><span>));
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(bindr == -</span><span style="color:#d08770;">1</span><span>) {
+</span><span>    </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Unable to bind: </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, errno);
+</span><span>    </span><span style="color:#96b5b4;">exit</span><span>(</span><span style="color:#d08770;">1</span><span>);
+</span><span>  }
+</span><span style="color:#65737e;">// new &gt;
+</span><span>
+</span><span>  uint8_t buf[</span><span style="color:#d08770;">16</span><span>];
+</span><span>  </span><span style="color:#b48ead;">int</span><span> bytes_read = </span><span style="color:#bf616a;">read</span><span>(socketfd, (</span><span style="color:#b48ead;">void </span><span>*)buf, </span><span style="color:#d08770;">16</span><span>);
+</span><span>
+</span><span>  </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Bytes read: </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, bytes_read);
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(bytes_read == -</span><span style="color:#d08770;">1</span><span>) {
+</span><span>    </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Unable to read: </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, errno);
+</span><span>    </span><span style="color:#96b5b4;">exit</span><span>(</span><span style="color:#d08770;">1</span><span>);
+</span><span>  }
+</span><span>}
+</span></code></pre>
+<p>Мы создали <strong>TCP</strong> сокет, но у нас ещё ни с кем не установлена сессия.
+А, следовательно, не создан и поток из которого можно читать.</p>
+<p>Если заменить TCP сокет на UDP, то программа успешно запускается и “зависает”.</p>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span>  </span><span style="color:#b48ead;">int</span><span> socketfd = </span><span style="color:#bf616a;">socket</span><span>(AF_INET, SOCK_DGRAM, </span><span style="color:#d08770;">0</span><span>);
+</span></code></pre>
+<p>На самом деле она <a href="https://man.archlinux.org/man/read.3p">функцией read</a> передаёт управление ядру до тех пор, пока на данный порт не прилетят какие-либо данные.
+Как только данные появляются, ядро записывает их в указанный нами буфер и возвращает управление программе.</p>
+<p>Именно такое поведение называется <strong>блокирующим</strong>, так как исполнение программы останавливается.</p>
+<p>Утилитой <code>ss</code> с флагами <code>-tulpn</code> ищем занятый порт созданным UDP сокетом.</p>
+<p>Утилитой <code>netcat</code> подключаемся к сокету и отправляем тестовое сообщение <code>kek</code>.
+В результате программа выдаст <strong>Bytes read: 4</strong> и завершится.
+Почему? Символа 3, соответственно и прочитано должно быть 3 байта.</p>
+<p>Все дело в особенности работы <code>netcat</code>. При отправке сообщения к нему добавляется
+символ конца строки (“\n”) и увеличивает размер на 1 байт.</p>
+<p>Очень важная особенность работы <a href="https://man.archlinux.org/man/read.3p">функции read</a> скрыта в возвращаемом значении.
+Она возвращает количество прочитанных байт.
+Последний аргумент функции - это именно размер буфера, т.е. верхнее ограничение.
+Функция за раз не вернёт больше информации, но может легко вернуть меньше.</p>
+<h1 id="listen">Listen</h1>
+<p>UDP отработал успешно, так как в один порт могут без дополнительных ограничений приходить разные “клиенты”.
+TCP отличается тем, что с каждым клиентом нужно установить отдельное соединение.
+Сокет инициализирующий соединение обычно работает всего с одним сетевым узлом (и называется активным).</p>
+<p>Однако, если вы делаете сервер, вам нужно на одном порту общаться сразу с несколькими клиентами.</p>
+<p><a href="https://man.archlinux.org/man/listen.3p">Функция listen</a> позволяет перевести сокет в “слушающий режим” (такой сокет называется пассивным).
+В нём ядро по определённому порту начинает “слушать” входящие соединения.</p>
+<p>На вход функция принимает уже привычный файловый дескриптор и backlog 0.o
+Backlog является верхним ограничением по количеству принимаемых соединений.</p>
+<p>Что может мотивировать нас искусственно устанавливать такое ограничение?
+Только ли это акт копирования примера из интернетов?</p>
+<p>Давайте сначала чётко определим, что это за backlog.
+В нём хранятся соединения, что мы ещё не приняли, т.е. принять и иметь в активном состоянии мы можем ощутимо большее количество сооединений.</p>
+<p>Некоторые имплементации при передаче <strong>0</strong>, выставляют минимальное доступное значение, при котором возможна работа (так говорит документация, мы не виноваты).
+Некоторые - <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html">игнорируют</a> это значение.
+В С максимальное значение доступно в константе <code>SOMAXCONN</code>.</p>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">arpa/inet.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">errno.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">stdint.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">stdio.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">stdlib.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">sys/socket.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">unistd.h</span><span>&gt;
+</span><span>
+</span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">main</span><span>() {
+</span><span>  </span><span style="color:#b48ead;">int</span><span> socketfd = </span><span style="color:#bf616a;">socket</span><span>(AF_INET, SOCK_STREAM, </span><span style="color:#d08770;">0</span><span>);
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(socketfd == -</span><span style="color:#d08770;">1</span><span>) {
+</span><span>    </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Unable to open a socket</span><span style="color:#96b5b4;">\n</span><span>&quot;);
+</span><span>    </span><span style="color:#96b5b4;">exit</span><span>(</span><span style="color:#d08770;">1</span><span>);
+</span><span>  }
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">struct</span><span> sockaddr_in sin;
+</span><span>  </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Port before bind </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, </span><span style="color:#bf616a;">ntohs</span><span>(sin.</span><span style="color:#bf616a;">sin_port</span><span>));
+</span><span>  socklen_t len = sizeof(sin);
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">int</span><span> bindr = </span><span style="color:#bf616a;">bind</span><span>(socketfd, (</span><span style="color:#b48ead;">struct</span><span> sockaddr *) &amp;sin, len);
+</span><span>
+</span><span>  </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Port after bind </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, </span><span style="color:#bf616a;">ntohs</span><span>(sin.</span><span style="color:#bf616a;">sin_port</span><span>));
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(bindr == -</span><span style="color:#d08770;">1</span><span>) {
+</span><span>    </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Unable to bind: </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, errno);
+</span><span>    </span><span style="color:#96b5b4;">exit</span><span>(</span><span style="color:#d08770;">2</span><span>);
+</span><span>  }
+</span><span>
+</span><span style="color:#65737e;">// &lt; new
+</span><span>  </span><span style="color:#b48ead;">int</span><span> listenr = </span><span style="color:#bf616a;">listen</span><span>(socketfd, </span><span style="color:#d08770;">0</span><span>);
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(listenr == -</span><span style="color:#d08770;">1</span><span>) {
+</span><span>    </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Unable to listen: </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, errno);
+</span><span>    </span><span style="color:#96b5b4;">exit</span><span>(</span><span style="color:#d08770;">3</span><span>);
+</span><span>  }
+</span><span style="color:#65737e;">// new &gt;
+</span><span>
+</span><span>  uint8_t buf[</span><span style="color:#d08770;">16</span><span>];
+</span><span>  </span><span style="color:#b48ead;">int</span><span> bytes_read = </span><span style="color:#bf616a;">read</span><span>(socketfd, (</span><span style="color:#b48ead;">void </span><span>*)buf, </span><span style="color:#d08770;">16</span><span>);
+</span><span>
+</span><span>  </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Bytes read: </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, bytes_read);
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(bytes_read == -</span><span style="color:#d08770;">1</span><span>) {
+</span><span>    </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Unable to read: </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, errno);
+</span><span>    </span><span style="color:#96b5b4;">exit</span><span>(</span><span style="color:#d08770;">4</span><span>);
+</span><span>  }
+</span><span>}
+</span></code></pre>
+<p><code>listen</code> не является блокирующей функцией, что приведет к немедленной попытке чтения из еще не установленного соединения.</p>
+<h1 id="accept">Accept</h1>
+<p><a href="https://man.archlinux.org/man/accept.3p">Функция accept</a> принимает соединение от клиента, который к нам подключается.
+Так как функция является блокирующей, мы будем ожидать клиента, пока он к нам не придет.
+Аргументами функции являются: файловый дескриптор сокета к которому будет организовано подключение, структура его описывающая и размер структуры.</p>
+<p>В случае успешной организации соединения возвращаемым значением будет файловый дескриптор нового сокета.</p>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">arpa/inet.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">errno.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">stdint.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">stdio.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">stdlib.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">sys/socket.h</span><span>&gt;
+</span><span style="color:#b48ead;">#include </span><span>&lt;</span><span style="color:#a3be8c;">unistd.h</span><span>&gt;
+</span><span>
+</span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">main</span><span>() {
+</span><span>  </span><span style="color:#b48ead;">int</span><span> socketfd = </span><span style="color:#bf616a;">socket</span><span>(AF_INET, SOCK_STREAM, </span><span style="color:#d08770;">0</span><span>);
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(socketfd == -</span><span style="color:#d08770;">1</span><span>) {
+</span><span>    </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Unable to open a socket</span><span style="color:#96b5b4;">\n</span><span>&quot;);
+</span><span>    </span><span style="color:#96b5b4;">exit</span><span>(</span><span style="color:#d08770;">1</span><span>);
+</span><span>  }
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">struct</span><span> sockaddr_in sin;
+</span><span>  </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Port before bind </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, </span><span style="color:#bf616a;">ntohs</span><span>(sin.</span><span style="color:#bf616a;">sin_port</span><span>));
+</span><span>  socklen_t len = sizeof(sin);
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">int</span><span> bindr = </span><span style="color:#bf616a;">bind</span><span>(socketfd, (</span><span style="color:#b48ead;">struct</span><span> sockaddr *) &amp;sin, len);
+</span><span>
+</span><span>  </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Port after bind </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, </span><span style="color:#bf616a;">ntohs</span><span>(sin.</span><span style="color:#bf616a;">sin_port</span><span>));
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(bindr == -</span><span style="color:#d08770;">1</span><span>) {
+</span><span>    </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Unable to bind: </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, errno);
+</span><span>    </span><span style="color:#96b5b4;">exit</span><span>(</span><span style="color:#d08770;">2</span><span>);
+</span><span>  }
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">int</span><span> listenr = </span><span style="color:#bf616a;">listen</span><span>(socketfd, </span><span style="color:#d08770;">3</span><span>);
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(listenr == -</span><span style="color:#d08770;">1</span><span>) {
+</span><span>    </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Unable to listen: </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, errno);
+</span><span>    </span><span style="color:#96b5b4;">exit</span><span>(</span><span style="color:#d08770;">3</span><span>);
+</span><span>  }
+</span><span style="color:#65737e;">// &lt; new
+</span><span>  </span><span style="color:#b48ead;">int</span><span> acceptfd = </span><span style="color:#bf616a;">accept</span><span>(socketfd, (</span><span style="color:#b48ead;">struct</span><span> sockaddr *) &amp;sin, &amp;len);
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(acceptfd == -</span><span style="color:#d08770;">1</span><span>) {
+</span><span>    </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Unable to accept: </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, errno);
+</span><span>    </span><span style="color:#96b5b4;">exit</span><span>(</span><span style="color:#d08770;">4</span><span>);
+</span><span>  }
+</span><span>  </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Accepted port: </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, </span><span style="color:#bf616a;">ntohs</span><span>(sin.</span><span style="color:#bf616a;">sin_port</span><span>));
+</span><span style="color:#65737e;">// new &gt;
+</span><span>
+</span><span>  uint8_t buf[</span><span style="color:#d08770;">16</span><span>];
+</span><span>  </span><span style="color:#b48ead;">int</span><span> bytes_read = </span><span style="color:#bf616a;">read</span><span>(acceptfd, (</span><span style="color:#b48ead;">void </span><span>*)buf, </span><span style="color:#d08770;">16</span><span>);
+</span><span>
+</span><span>  </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Bytes read: </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, bytes_read);
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(bytes_read == -</span><span style="color:#d08770;">1</span><span>) {
+</span><span>    </span><span style="color:#96b5b4;">printf</span><span>(&quot;</span><span style="color:#a3be8c;">Unable to read: </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, errno);
+</span><span>    </span><span style="color:#96b5b4;">exit</span><span>(</span><span style="color:#d08770;">5</span><span>);
+</span><span>  }
+</span><span>}
+</span></code></pre>
+<p>Здесь нужно отметить, что мы пытаемся прочитать не из ранее созданного нами сокета (как мы это делали в предыдущих примерах), а из нового, полученного от функции <code>accept</code>.</p>
+<p>И, наконец-то, наш пример позволил нам прочитать сообщение от клиента и вывел заветные <strong>Bytes read: 4</strong>.</p>
+<h1 id="primer-s-dvumia-pisateliami">Пример с двумя писателями</h1>
+<p>В один поток/сокет читает многих</p>
+<p>Соединения принимаются для многих, но программа на это не реагирует, а ждёт посылки от первого клиента (попавшего в accept).
+<a href="https://youtu.be/MilImqovonE?t=3762">Пример поведения в записи</a>.</p>
+<h1 id="osobye-sys-call-y">Особые sys call’ы</h1>
+<p>Иногда работы с сокетами как с файлами недостаточно.
+Для более гранулярной работы с сетевой природой сокетов существуют специальные системный вызовы.</p>
+<p><a href="https://man.archlinux.org/man/recv.2">recv</a> - аналог <a href="https://man.archlinux.org/man/read.2">read</a>, но поддерживает указание дополнительных флагов.
+Без них функция ведёт себя в точности как <a href="https://man.archlinux.org/man/read.2">read</a>.</p>
+<p>Флаги позволяют позволяют изменить стандартное поведение.
+Три ярких примера:</p>
+<ul>
+<li>Подсматривать в данные (читать без помечания данных прочитанными), т.е. следующее чтение всё ещё вернёт эти данные</li>
+<li>Блокировать исполнение, до тех пор, пока не будет прочитан указанный объём данных (или не произойдёт ошибка)</li>
+<li>Организовать неблокирующую работу в рамках вызова, а не сокета целиком</li>
+</ul>
+<p><a href="https://man.archlinux.org/man/send.2">send</a> относится к <a href="https://man.archlinux.org/man/write.2">write</a>, так же как и recv к read.</p>
+<p>Программа чтения
+программа записи</p>
+<p>совместный запуск</p>
+<h1 id="sozdanie-potoka-na-kazhdogo-klienta">Создание потока на каждого клиента</h1>
+<p>Пример сервера</p>
+<p>Запуск</p>
+<h1 id="dopy">Допы</h1>
+<h2 id="errno">Errno</h2>
+<p><a href="https://man.archlinux.org/man/errno.3p">errno</a> - номер ошибки возникшей во время выполнения системного вызова или некоторых функций.</p>
+<p>Значение <code>errno</code> глобальное.</p>
+<h2 id="sborka-i-zapusk">Сборка и запуск</h2>
+<p>Здесь все примеры написаны на языке <code>C</code>.
+Для их сборки достаточно выполнить команду <code>gcc</code> и указать путь к файлу с исходным кодом.
+Без указания флага <code>-o</code> код будет скомпилирован в исполняемый файл<code>a.out</code>.
+Который можно сразу запустить: <code>./a.out</code>.</p>
+<h2 id="domennye-imena">Доменные имена</h2>
+<h2 id="ipv6">IPv6?</h2>
+
+</div>
+</div>
+        </section>
+      </main>
+
+      <footer class="footer" style="margin-top: auto">
+        <div class="content has-text-centered">
+          <p>
+            Сделяль <a href="https://ejiek.com">@ejiek</a>. Исходный код имеет
+            лицензию
+            <a href="http://opensource.org/licenses/mit-license.php">MIT</a>.
+            Содержимое сайта имеет лицензию
+            <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a
+            >.
+          </p>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <link rel="stylesheet" href="/fonts/stylesheet.css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Курс ТКС</title>
+    <link
+      rel="stylesheet"
+      href="/insysnw.css"
+    />
+	<!--
+	  Pins footer to the bottom
+	  TODO: place it properly
+	-->
+    <style>
+      .course {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      body {
+        display: flex;
+        min-height: 100vh;
+        flex-direction: column;
+      }
+
+      footer {
+        margin-top: auto;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="course">
+      <header>
+        <nav class="level nerd">
+          <p class="level-item has-text-centered">
+		    <a href="/lectures">
+              <span class="icon">
+                <i class="mdi mdi-24px mdi-book-open-page-variant" aria-hidden="true"></i>
+              </span>
+              <span class="f3270">Лекции</span>
+            </a>
+          </p>
+          <p class="level-item has-text-centered">
+		    <a href="/practice">
+              <span class="icon">
+                <i class="mdi mdi-24px mdi-flask" aria-hidden="true"></i>
+              </span>
+              <span class="f3270">Практика</span>
+            </a>
+          </p>
+          <p class="level-item has-text-centered">
+            <img
+              src="https://icst.spbstu.ru/userfiles/files/Risunok-KSPT.png"
+              alt="КСПТ"
+              style="height: 50px"
+            />
+          </p>
+          <p class="level-item has-text-centered">
+		    <a href="/awesome">
+              <span class="icon">
+                <i class="mdi mdi-24px mdi-sunglasses" style="color: #fc60a8;" aria-hidden="true"></i>
+              </span>
+              <span class="f3270">Awesome</span>
+            </a>
+          </p>
+          <p class="level-item has-text-centered">
+		    <a href="/">
+              <span class="icon">
+                <i class="mdi mdi-24px mdi-information-outline" aria-hidden="true"></i>
+              </span>
+              <span class="f3270">О курсе</span>
+            </a>
+          </p>
+        </nav>
+      </header>
+      <main>
+        <section class="section">
+          <div class="container">
+
+<h1 class="title">
+Руководство: Создание SSH ключа
+<h1>
+
+<div class="content">
+<p>В рамках данного курса вам понадобится доступ к командной строке удалённой машины (сервера).
+Основной способ доступа - <a href="https://ru.wikipedia.org/wiki/SSH">Secure Shell (SSH)</a>.</p>
+<p>Помимо этого мы будем использовать этот протокол для передачи данных и инкапсуляции трафика.</p>
+<p>Особенностями SSH является наличие шифрования и аутентификации.
+Последняя может быть разной, но две самых популярных опции - по ключу и по паролю.
+В курсе вы будете пользоваться аутентификацией по ключу. Далее очень кратко рассмотрим работу с ключами, а более подробную информацию можно найти в <a href="https://wiki.archlinux.org/index.php/SSH_keys">статье Archlinux Wiki</a></p>
+<p>Ключ не имеет силы самостоятельно, а приобретает её оказавшись в паре.
+Пара состоит из приватного и публичного ключей.
+Однако удобнее думать о них не как о паре ключей, а как о замке́ и ключе от него.</p>
+<p>Рассмотрим на примере - создадим новую пару ключей (<strong>замените <code>Petrov.VD</code> на свои инициалы, <code>123</code> на номер группы</strong>):</p>
+<p><strong>Сейчас на вопрос программы <code>Enter passphrase (empty for no passphrase):</code> отвечаем нажатием на <code>Enter</code>. Дважды.</strong></p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>ssh-keygen -t ed25519 -f ~/.ssh/cnt -C &quot;Petrov.VD@123&quot;
+</span></code></pre>
+<p>, где</p>
+<ul>
+<li><code>-t ed25519</code> - указывает тип используемого ключа (другие варианты можно рассмотреть дома за кружечкой чая)</li>
+<li><code>-f ~/.ssh/cnt</code> - указывает опорное имя файла для генерируемых ключей (<code>cnt</code> - computer network technologies)</li>
+<li><code>-C Petrov.VD@123</code> - комментарий, указываемый в публичном ключе (замке́) <em>(не забудь заменить)</em></li>
+</ul>
+<p>В результате этой команды в папке <code>~/.ssh</code> появятся 2 файла:</p>
+<ul>
+<li><code>~/.ssh/cnt</code> - приватный ключ, т.е. истинный ключ (храним при себе, никому не отдаём)</li>
+<li><code>~/.ssh/cnt.pub</code> - публичный ключ, т.е. замо́к (отправляем его, пусть им закрывают)</li>
+</ul>
+<p>Рассмотрим приватный ключ:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>-----BEGIN OPENSSH PRIVATE KEY-----
+</span><span>b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+</span><span>QyNTUxOQAAACB+EuUyT8pyWejToiloix2wdmE12kjZPV4A14G7wD3S5gAAAJCD9KJ6g/Si
+</span><span>egAAAAtzc2gtZWQyNTUxOQAAACB+EuUyT8pyWejToiloix2wdmE12kjZPV4A14G7wD3S5g
+</span><span>AAAEB/gbUJXU50h2ni8ulfmmk2Ae/C6wMcba4xACD4hV0DjH4S5TJPynJZ6NOiKWiLHbB2
+</span><span>YTXaSNk9XgDXgbvAPdLmAAAADVZELlBldHJvdiAyMDM=
+</span><span>-----END OPENSSH PRIVATE KEY-----
+</span></code></pre>
+<p>Открывающие, закрывающие теги и символы, в которые закодирован ключ.
+Идентифицировать ключ вам позволяет название файла.</p>
+<p>Рассмотрим публичный ключ (замо́к):</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH4S5TJPynJZ6NOiKWiLHbB2YTXaSNk9XgDXgbvAPdLm Petrov.VD@123
+</span></code></pre>
+<p>Он состоит из трёх частей</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>тип-ключа сам-ключ комментарий
+</span></code></pre>
+<p>Первые два поля нужны для работы протокола, а третье помогает понять администратору “закрываемого” узла, чей это публичный ключ (замо́к).</p>
+<p>Это вызвано тем, что каждый приватный ключ вы храните в отдельном файле, а публичные ключи (замки́) на “закрываемом” узле обычно хранятся все в одной файле (часто <code>~/.ssh/authorized_keys</code>).
+Никаких общих требований к формату комментария нет.
+По умолчанию это <code>username@hostname</code>, того пользователя и узла, на которых ключ создавался, но в нашем курсе для удобства преподавательского состава это <code>Surname.NP@GroupNumber</code>, т.е. ФИО и номер группы.</p>
+<p>На этом этапе замо́к (публичный ключ, <code>.pub</code>) можно отправлять преподавателю.</p>
+<h1 id="dopolnitel-naia-informatsiia">Дополнительная информация</h1>
+<h2 id="mozhno-li-ispol-zovat-publichnyi-kliuch-dlia-dostupa-bol-she-chem-na-odno-ustroistvo">Можно ли использовать публичный ключ для доступа больше чем на одно устройство.</h2>
+<p>Можно и нужно.
+В рамках данного курса вы передаёте один публичный ключ преподавателю, а он создает несколько виртуальных машин с вашим публичным ключом.</p>
+<p>Однако не стоит иметь всего один ключ на всё-всё-всё.
+Рекомендуем думать о разделение устройств с точки зрения компрометации приватного ключа - если злоумышленник украл ваш личный ключ, это не должно дать ему доступ к хотам, доступным вам по рабочим причинам.
+И наоборот.</p>
+<h2 id="mozhno-li-ispol-zovat-privatnyi-kliuch-bol-she-chem-na-odnom-ustroistve">Можно ли использовать приватный ключ больше чем на одном устройстве.</h2>
+<p>Да.
+В рамках данного курса рекомендуем скопировать приватный ключ на все устройства, на которых вы планируете выполнять лабораторные.
+Правилом хорошего тона является offline копирование или же в контролируемой сети (например, домашней).
+Тем не менее в реально жизни делать так не рекомендуется.
+<strong>TODO</strong>: описать кейс утери устройства</p>
+<h2 id="fail-konfiguratsii">Файл конфигурации</h2>
+<p><strong>TODO</strong>: описать использование <a href="https://linux.die.net/man/5/ssh_config">файла конфигурации</a></p>
+<h2 id="kogo-zashchishchaet-pass-phrase">Кого защищает Pass Phrase</h2>
+<p><strong>TODO</strong>: да</p>
+<h2 id="ssh-agent">SSH агент</h2>
+<p><strong>TODO</strong>: <a href="https://wiki.archlinux.org/index.php/SSH_keys#SSH_agents">да</a></p>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p><strong>TODO:</strong> <a href="https://wiki.archlinux.org/index.php/SSH_keys#Key_ignored_by_the_server">описать фикс прав и почему он вообще нужен</a></p>
+
+</div>
+</div>
+        </section>
+      </main>
+
+      <footer class="footer" style="margin-top: auto">
+        <div class="content has-text-centered">
+          <p>
+            Сделяль <a href="https://ejiek.com">@ejiek</a>. Исходный код имеет
+            лицензию
+            <a href="http://opensource.org/licenses/mit-license.php">MIT</a>.
+            Содержимое сайта имеет лицензию
+            <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a
+            >.
+          </p>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

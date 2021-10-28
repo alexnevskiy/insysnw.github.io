@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <link rel="stylesheet" href="/fonts/stylesheet.css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Курс ТКС</title>
+    <link
+      rel="stylesheet"
+      href="/insysnw.css"
+    />
+	<!--
+	  Pins footer to the bottom
+	  TODO: place it properly
+	-->
+    <style>
+      .course {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      body {
+        display: flex;
+        min-height: 100vh;
+        flex-direction: column;
+      }
+
+      footer {
+        margin-top: auto;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="course">
+      <header>
+        <nav class="level nerd">
+          <p class="level-item has-text-centered">
+		    <a href="/lectures">
+              <span class="icon">
+                <i class="mdi mdi-24px mdi-book-open-page-variant" aria-hidden="true"></i>
+              </span>
+              <span class="f3270">Лекции</span>
+            </a>
+          </p>
+          <p class="level-item has-text-centered">
+		    <a href="/practice">
+              <span class="icon">
+                <i class="mdi mdi-24px mdi-flask" aria-hidden="true"></i>
+              </span>
+              <span class="f3270">Практика</span>
+            </a>
+          </p>
+          <p class="level-item has-text-centered">
+            <img
+              src="https://icst.spbstu.ru/userfiles/files/Risunok-KSPT.png"
+              alt="КСПТ"
+              style="height: 50px"
+            />
+          </p>
+          <p class="level-item has-text-centered">
+		    <a href="/awesome">
+              <span class="icon">
+                <i class="mdi mdi-24px mdi-sunglasses" style="color: #fc60a8;" aria-hidden="true"></i>
+              </span>
+              <span class="f3270">Awesome</span>
+            </a>
+          </p>
+          <p class="level-item has-text-centered">
+		    <a href="/">
+              <span class="icon">
+                <i class="mdi mdi-24px mdi-information-outline" aria-hidden="true"></i>
+              </span>
+              <span class="f3270">О курсе</span>
+            </a>
+          </p>
+        </nav>
+      </header>
+      <main>
+        <section class="section">
+          <div class="container">
+
+<h1 class="title">
+Лабораторная: Удалённый доступ
+<h1>
+
+<div class="content">
+<p>Вы этой работе мы:</p>
+<ul>
+<li>Получим доступ к персональной Виртуальной Машине(ВМ)</li>
+<li>Научимся решать типичные проблемы с доступом по SSH</li>
+<li>Попробуем проброс портов (туннелирование)</li>
+<li>Познакомимся с терминами JumpHost и Bastion</li>
+</ul>
+<p>и не только.</p>
+<p>Эта лабораторная требует от обучающихся предварительной подготовки - <a href="https://insysnw.github.io/practice/guides/ssh-keygen/">создание пары ssh ключей</a> и передачу публичной части преподавателю.</p>
+<p>IP адреса выдает преподаватель, проводящий лабораторную.</p>
+<h2 id="openssh">OpenSSH</h2>
+<p>Основным инструментом в данной лабораторной является клиент <a href="http://www.openssh.com/">openssh</a>:</p>
+<p>Это основная реализация протокола ssh, созданного для безопасной замены FTP (20, 21 порты) и telnet (23 порт).
+Автору удалось удачно подчеркнуть данный факт занятием 22 порта.</p>
+<p>Это консольное приложение, поэтому выполняем в эмуляторе терминала:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ssh</span><span> root@${</span><span style="color:#bf616a;">IPv4Address</span><span>}</span><span style="color:#bf616a;"> -i ~</span><span>/.ssh/cnt
+</span></code></pre>
+<p><strong>TODO</strong>: ссылка на трабулшутинг в подвале.</p>
+<p>После успешного подключения мы увидим Message of the Day командную строку удалённого сервера:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">root@localhost:~#
+</span></code></pre>
+<p>Закрываем соединение.
+Это можно сделать командой <code>exit</code> или сочетанием клавиш <code>Ctrl-D</code>.
+Такое сочетание клавишь работает только при пустой строке</p>
+<h2 id="konfiguratsionnyi-fail">Конфигурационный файл</h2>
+<p>Каждый раз указывать все параметры - не самое удобное занятие.
+Отличия у хостов могут быть во всём: имя пользователя, доменное имя или IP адрес, ключ, порт и это только малая часть параметров.</p>
+<p>Для решения этой проблемы openssh поддерживает файлы конфигурации.
+Файл <code>~/.ssh/config</code> (<code>%USERPROFILE%\.ssh</code> для пользователей Windows)</p>
+<p>Пример для ВМ с адресом <code>206.189.50.156</code>:</p>
+<pre data-lang="fish" style="background-color:#2b303b;color:#c0c5ce;" class="language-fish "><code class="language-fish" data-lang="fish"><span style="color:#bf616a;">Host </span><span>cnt-lab1
+</span><span>  </span><span style="color:#bf616a;">User </span><span>root
+</span><span>  </span><span style="color:#bf616a;">HostName </span><span>206.189.50.156
+</span><span>  </span><span style="color:#bf616a;">IdentityFile </span><span>~/.ssh/cnt
+</span></code></pre>
+<p>На данном этапе конфигурационный файл отличается от ранее приведённой команды только наличием поля <code>Host</code>.
+Это имя по которому на локальной машине вы хотите обращаться к ВМ.
+Используется только на локальной машине, т.е. можно выбрать то, что удобно именно вам.</p>
+<h2 id="tipichnye-problemy">Типичные проблемы</h2>
+<p>В этом разделе мы искусственно создадим и решим одни из самых распространённых проблем при работе с OpenSSH.</p>
+<ul>
+<li>Сломать - починить права.</li>
+</ul>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+</span><span>@         WARNING: UNPROTECTED PRIVATE KEY FILE!          @
+</span><span>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+</span><span>Permissions 0640 for &#39;/home/insys/.ssh/cnt&#39; are too open.
+</span><span>It is required that your private key files are NOT accessible by others.
+</span><span>This private key will be ignored.
+</span><span>Load key &quot;/home/insys/.ssh/cnt&quot;: bad permissions
+</span><span>root@206.189.50.156: Permission denied (publickey).
+</span></code></pre>
+<ul>
+<li>
+<p>Сравнить host ключ сервера и known_host (обсудить форматы)</p>
+</li>
+<li>
+<p>Поменять ключ в known_hosts (причины поведения)
+Настройка <code>StrictHostKeyChecking</code> <a href="https://linux.die.net/man/5/ssh_config">man ssh_config</a></p>
+</li>
+</ul>
+<h2 id="kopirovanie-failov">Копирование файлов</h2>
+<p>Мы обсудили, что ssh был призван и для замены FTP - протокола для передачи данных.
+Тут у нас совсем немного грустных новостей.
+Интегрированный в ssh протокол для передачи данных - <code>scp</code> необратимо <a href="https://www.openssh.com/txt/release-8.0">устарел</a>.</p>
+<p><a href="https://lwn.net/SubscriberLink/835962/ae41b27bc20699ad/">Тут</a> можно подробнее почитать про эксплуатацию уязвимости протокола.</p>
+<p>Тем не менее эта новость не так страшно, ведь есть утилиты и протоколы работающие поверх ssh и предоставляющие более удобную реализацию работы с файлами.</p>
+<p>sftp и rsync - отличные примеры.
+Они не всегда предустановлены, но доступны почти на любой системе.</p>
+<p>Также стоит отличать <strong>s</strong>ftp и ftp<strong>s</strong>.
+<strong>TODO</strong>: описать разницу</p>
+<p><strong>TODO</strong>: Пример использовать sftp</p>
+<h2 id="socks5-proxy">SOCKS5 Proxy</h2>
+<p>Локально проверяем, с какого IP мы обращаемся.
+Настраиваем браузер, curl.</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ssh -D</span><span> 8118</span><span style="color:#bf616a;"> -N</span><span> lab-cnt1
+</span></code></pre>
+<ul>
+<li><code>-N</code> Do not execute a remote command. This is useful for just forwarding ports.</li>
+</ul>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">curl</span><span> ipinfo.io
+</span></code></pre>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">curl -x</span><span> socks5h://localhost:8118 ipinfo.io
+</span></code></pre>
+<p>Почему прокси плохо</p>
+<h2 id="tunelirovanie">Тунелирование</h2>
+<h3 id="lokal-noe">Локальное</h3>
+<p><strong>Локальное</strong> (local) - проброс порта удалённой машины на локальную.</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ssh -L</span><span> 8080:localhost:80</span><span style="color:#bf616a;"> -N</span><span> cnt
+</span></code></pre>
+<p>edit <code>/var/www/html/index.nginx-debian.html</code></p>
+<h3 id="udalionnoe">Удалённое</h3>
+<p><strong>Удалённое</strong> (remote) - проброс локального порта на удалённую машину.</p>
+<p>Для демонстрации удалённого туннелирования нам потребуется что-то, открытое на локальном порту.
+Возьмём для этого веб сервер <a href="https://caddyserver.com/">Caddy</a>, так как он распространяется одним бинарным файлом без зависимостей и доступен для большинства платформ. 
+Для этого нужно скачать файл сервера для вашей платформы на <a href="https://caddyserver.com/download">странице загрузки</a>.
+Просто нажимаем кнопку <strong>Download</strong>, ведь дополнительные пакеты в этой лабораторной нам не нужны.</p>
+<p>Так как мы будем использовать очень простую конфигурацию сервера, предлагаем создать в удобном для вас месте директорию <code>cnt-caddy</code> и дальнейшую работу с этим упражнением проводить в ней.
+Именно в эту директорию положим только что загруженный файл и переименуем его в <code>caddy</code>.
+Пользователям unix подобных систем стоит не забыть добавить бит исполнения - <code>chmod u+x caddy</code></p>
+<p>Теперь создадим в этой же директории конфигурационный файл для вэб сервера - <code>Caddyfile</code> со следующим содержанием:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>:1620
+</span><span>
+</span><span>respond &quot;Hi, I&#39;m caddy on YOUR_IDENTIFIER local machine
+</span><span>&quot;
+</span></code></pre>
+<p>Для более простого опознавания предлагаю заменить <code>YOUR_IDENTIFIER</code> на что-то узнаваемое, например имя или никнэйм.</p>
+<p>Теперь запустим caddy:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">./caddy</span><span> run
+</span></code></pre>
+<p>Проверим, что наш сервер работает!
+Открываем в браузере <code>localhost:1620</code></p>
+<p>Если всё хорошо, вы увидите в браузере знакомое сообщение из конфигурационного файла.
+Теперь попробует получить это же сообщение на удалённой виртуальной машине.</p>
+<p>Начнём с проверки, что на желаемом порту виртуальной машины на данный момент ничего нет.
+Открываем в браузере <code>206.189.50.156:1621</code> <em>(подставляем свой адрес)</em>.
+Порт для виртуальной машины специально выбран отличный от такого на локальной, чтобы финальная команда была нагляднее.
+Результат - отсутствие ответа.</p>
+<p>Теперь откроем туннель командой</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ssh -R</span><span> 1621:localhost:1620</span><span style="color:#bf616a;"> -N</span><span> cnt
+</span></code></pre>
+<p>Снова открываем в браузере <code>206.189.50.156:1621</code>.
+Результат - опять знакомая страничка.
+Так мы выставили локальный для вашей машины сервис в общедоступный интернет.
+Обычно это крайне сомнительная идея, но для изолированных сетей это выглядит значительно более оправдано.</p>
+<h2 id="pryzhki">“Прыжки”</h2>
+<p>В рамках этого упражнения мы попадём на виртуальную машину, доступную только внутри изолированной сети.</p>
+<p><img src="../internalDroplet.png" alt="internalDroplet" /></p>
+<p>Первое и самое простое, попробуем получить к ней доступ напрямую:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ssh </span><span>$</span><span style="color:#bf616a;">InternalIP
+</span></code></pre>
+<ul>
+<li>ручками, запуская клиент на бастионе - есть коннект, но всё ещё fail</li>
+<li>ручками, запуская клиент на бастионе с логином и паролем - win</li>
+<li>преподаватель отключает пароль и поясняет, чем это плохо</li>
+</ul>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ssh</span><span> root@$</span><span style="color:#bf616a;">InternalIP -i ~</span><span>/.ssh/cnt</span><span style="color:#bf616a;"> -o</span><span> ProxyCommand=&quot;</span><span style="color:#a3be8c;">ssh cnt nc %h %p</span><span>&quot;
+</span></code></pre>
+<blockquote>
+<p><strong>-W</strong> Requests that standard input and output on the client be forwarded to host on port over the secure channel.</p>
+</blockquote>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ssh</span><span> root@$</span><span style="color:#bf616a;">InternalIP -i ~</span><span>/.ssh/cnt</span><span style="color:#bf616a;"> -o</span><span> ProxyCommand=&quot;</span><span style="color:#a3be8c;">ssh cnt -W %h:%p</span><span>&quot;
+</span></code></pre>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ssh</span><span> root@$</span><span style="color:#bf616a;">InternalIP -i ~</span><span>/.ssh/cnt</span><span style="color:#bf616a;"> -J</span><span> cnt&quot;
+</span></code></pre>
+<h1 id="recap">Recap</h1>
+<p>Прямо сейчас попробуем применить новые знания к повседневной задаче!
+Но для этого вам необходим профиль на github или gitlab.
+Если их нет, можно смело пропустить это упражнение, ведь мы его проходили в самом начале.</p>
+<h2 id="github">Github</h2>
+<p>Создадим новую пару ключей:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ssh-keygen -t</span><span> ed25519</span><span style="color:#bf616a;"> -f ~</span><span>/.ssh/github
+</span></code></pre>
+<p>TODO: рекомендация по <code>passphrase</code> и его смене.</p>
+<p>Теперь добавим только что созданный публичный ключ, <code>~/.ssh/github.pub</code>, в <a href="https://github.com/settings/keys">settings/keys</a>.</p>
+<pre data-lang="fish" style="background-color:#2b303b;color:#c0c5ce;" class="language-fish "><code class="language-fish" data-lang="fish"><span style="color:#bf616a;">Host </span><span>github
+</span><span>  </span><span style="color:#bf616a;">User </span><span>git
+</span><span>  </span><span style="color:#bf616a;">HostName </span><span>github.com
+</span><span>  </span><span style="color:#bf616a;">IdentityFile </span><span>~/.ssh/github
+</span></code></pre>
+<p>Проверим наши настройки, выполнив подключение к github:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ssh</span><span> github
+</span></code></pre>
+<p>Если всё успешно, вы увидите знакомое сообщение про принятие ключа хоста, а потом github вас поприветствует:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>PTY allocation request failed on channel 0
+</span><span>Hi ejiek! You&#39;ve successfully authenticated, but GitHub does not provide shell access.
+</span><span>Connection to github.com closed.
+</span></code></pre>
+<p>На месте <code>ejiek</code> вам должен предстать ваш username.</p>
+<h2 id="gitlab">Gitlab</h2>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ssh-keygen -t</span><span> ed25519</span><span style="color:#bf616a;"> -f ~</span><span>/.ssh/gitlab
+</span></code></pre>
+<p>Теперь добавим только что созданный публичный ключ, <code>~/.ssh/gitlab.pub</code>, в <a href="https://gitlab.com/-/profile/keys">settings/SSH Keys</a>.</p>
+<pre data-lang="fish" style="background-color:#2b303b;color:#c0c5ce;" class="language-fish "><code class="language-fish" data-lang="fish"><span style="color:#bf616a;">Host </span><span>gitlab
+</span><span>  </span><span style="color:#bf616a;">User </span><span>git
+</span><span>  </span><span style="color:#bf616a;">HostName </span><span>gitlab.com
+</span><span>  </span><span style="color:#bf616a;">IdentityFile </span><span>~/.ssh/gitlab
+</span></code></pre>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">ssh</span><span> gitlab
+</span></code></pre>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>PTY allocation request failed on channel 0
+</span><span>Welcome to GitLab, @ejiek!
+</span><span>Connection to gitlab.com closed.
+</span></code></pre>
+<h1 id="dopolnitel-naia-informatsiia">Дополнительная информация</h1>
+<h2 id="kak-popast-v-ci-pipeline">Как попасть в CI pipeline?</h2>
+<p>Например, <a href="https://github.com/TimeToogo/tunshell">tunshell</a></p>
+<h2 id="byvaet-li-udobnee">Бывает ли удобнее.</h2>
+<p>Бывает - <a href="https://gravitational.com/teleport/">Teleport</a></p>
+<h2 id="message-of-the-day">Message of the Day</h2>
+<p><strong>TODO</strong>: докинуть инфы
+<code>/etc/motd</code></p>
+
+</div>
+</div>
+        </section>
+      </main>
+
+      <footer class="footer" style="margin-top: auto">
+        <div class="content has-text-centered">
+          <p>
+            Сделяль <a href="https://ejiek.com">@ejiek</a>. Исходный код имеет
+            лицензию
+            <a href="http://opensource.org/licenses/mit-license.php">MIT</a>.
+            Содержимое сайта имеет лицензию
+            <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a
+            >.
+          </p>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
